@@ -697,17 +697,17 @@ end:
 
 int FuzzerTestOneInput(const uint8_t *buf, size_t len)
 {
-    int r = 1;
+    int r = 0;
     uint64_t *operation = NULL;
     int64_t *algorithm = NULL;
 
     if (!read_uint(&buf, &len, &operation)) {
-        r = 0;
+        r = -1;
         goto end;
     }
 
     if (!read_int(&buf, &len, &algorithm)) {
-        r = 0;
+        r = -1;
         goto end;
     }
 
@@ -750,7 +750,7 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
         /* not yet implemented */
         break;
     default:
-        r = 0;
+        r = -1;
         goto end;
     }
 
