@@ -42,9 +42,17 @@ static double secs_since(clock_t start)
     return (double)(clock() - start) / CLOCKS_PER_SEC;
 }
 
-static void run_baseline(const unsigned char *buf, size_t s)
+static int bad_return_value = 0;
+
+static void run_baseline(const unsigned char *buf, size_t s, const char *path)
 {
-    FuzzerTestOneInput(buf, s);
+    int ret = FuzzerTestOneInput(buf, s);
+
+    /* libFuzzer only allows 0 (accept) or -1 (reject) as return values */
+    if (ret != 0 && ret != -1) {
+        fprintf(stderr, "%s: FuzzerTestOneInput() returned %d\n", path, ret);
+        bad_return_value = 1;
+    }
 }
 
 static void run_mfail(const unsigned char *buf, size_t s,
@@ -101,7 +109,7 @@ static void testfile(const char *pathname, int file_idx)
     if (mfail_is_installed())
         run_mfail(buf, s, pathname, file_idx);
     else
-        run_baseline(buf, s);
+        run_baseline(buf, s, pathname);
 
     free(buf);
     fclose(f);
@@ -170,5 +178,5 @@ int main(int argc, char **argv)
         fprintf(stderr, "# corpus_time: %.6f\n", secs_since(corpus_start));
 
     FuzzerCleanup();
-    return 0;
+    return bad_return_value;
 }
