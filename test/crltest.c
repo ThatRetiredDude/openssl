@@ -1115,6 +1115,29 @@ static const char *kCrlIDPOtherURI[] = {
 };
 
 /*
+ * A CRL issued by kRoot with an IDP whose distribution point is the relative
+ * name CN=Part1, so its full name is kRoot's subject plus CN=Part1.  That is
+ * not one of the cRLIssuer names of kCrlIssuerDPLeaf.
+ */
+static const char *kCrlIDPRelativeName[] = {
+    "-----BEGIN X509 CRL-----\n",
+    "MIICLTCCARUCAQEwDQYJKoZIhvcNAQELBQAwgZAxCzAJBgNVBAYTAlVTMRMwEQYD\n",
+    "VQQIDApDYWxpZm9ybmlhMRYwFAYDVQQHDA1TYW4gRnJhbmNpc2NvMRUwEwYDVQQK\n",
+    "DAxFeGFtcGxlIENvcnAxHjAcBgNVBAsMFUNlcnRpZmljYXRlIEF1dGhvcml0eTEd\n",
+    "MBsGA1UEAwwURXhhbXBsZSBDb3JwIFJvb3QgQ0EXDTI2MDMxMDA4MDAwMFoXDTI2\n",
+    "MDYwODA4MDAwMFqgUDBOMB4GA1UdHAEB/wQUMBKgEKEOMAwGA1UEAwwFUGFydDEw\n",
+    "HwYDVR0jBBgwFoAU/hQOExsJZ8tKDUvaT/PvkLVD2zMwCwYDVR0UBAQCAhACMA0G\n",
+    "CSqGSIb3DQEBCwUAA4IBAQCqLFSVXmh1FwyvW14qo4dt5K40lkLc90D6U8kV8WPL\n",
+    "9LQC9gRypoINSKVjhLQy/Mxqil4xUQw0Ywe1wF3/UqPIFVL1/yFZnKQURO8Gu9pn\n",
+    "3oIpDBgrW2VvHDHd5BlCAXpZW8Zgi2Cif7DlOzeVRvNAcWwqH/Qc2UC+v0E1+ZIM\n",
+    "Ob1dmRQ7bZqYnKdJ5vsdnzCJl6TnU6Que3qtpmA/Re2fR+gGRIilwUD2m5b/RXg1\n",
+    "44rZFMgq4Y0wRd1YUgAOCO5OhPTuoS0vx90coRNQ5FgIIpbBuJd6cSjKMyyp9jC7\n",
+    "xP5Qqd2e+I+r5yoFAGWb0X41YCwLIguJRDHVmh2Cc89C\n",
+    "-----END X509 CRL-----\n",
+    NULL
+};
+
+/*
  * A well-formed CRL issued by kRoot (sha256WithRSAEncryption, inner and
  * outer signatureAlgorithm identical), used as the positive test case in
  * test_crl_sigalg_mismatch.
@@ -2068,6 +2091,28 @@ static int test_crl_dp_crlissuer_idp_mismatch(void)
     return test;
 }
 
+static int test_crl_dp_crlissuer_idp_relative(void)
+{
+    X509 *root = X509_from_strings(kRoot);
+    X509 *leaf = X509_from_strings(kCrlIssuerDPLeaf);
+    X509_CRL *crl = CRL_from_strings(kCrlIDPRelativeName);
+    STACK_OF(X509_CRL) *crls = NULL;
+    int test;
+
+    test = TEST_ptr(root)
+        && TEST_ptr(leaf)
+        && TEST_ptr(crl)
+        && TEST_ptr((crls = make_CRL_stack(crl, NULL)))
+        && TEST_int_eq(verify(leaf, root, crls, X509_V_FLAG_CRL_CHECK,
+                           kVerify),
+            X509_V_ERR_DIFFERENT_CRL_SCOPE);
+
+    X509_CRL_free(crl);
+    X509_free(leaf);
+    X509_free(root);
+    return test;
+}
+
 static int test_crl_sigalg_mismatch(void)
 {
     X509 *root = X509_from_strings(kRoot);
@@ -2166,6 +2211,7 @@ int setup_tests(void)
     ADD_TEST(test_crl_indirect_no_chain);
     ADD_TEST(test_crl_dp_crlissuer_idp_match);
     ADD_TEST(test_crl_dp_crlissuer_idp_mismatch);
+    ADD_TEST(test_crl_dp_crlissuer_idp_relative);
     ADD_ALL_TESTS(test_reuse_crl, 6);
     ADD_MFAIL_TEST(test_crl_diff_mfail);
     ADD_TEST(test_crl_sigalg_mismatch);
