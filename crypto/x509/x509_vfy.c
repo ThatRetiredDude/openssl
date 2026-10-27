@@ -1984,6 +1984,25 @@ static int crldp_check_crlissuer(DIST_POINT *dp, X509_CRL *crl, int crl_score)
 
 /*
  * Check whether the distribution point name |idpname| of a CRL's IDP extension
+ * matches one of the names in the cRLIssuer field |crlissuer| of a certificate
+ * distribution point that has no distributionPoint field.  RFC 5280, section
+ * 6.3.3 (b)(2)(i), requires such a match in this case.  No names never match.
+ */
+static int idp_check_crlissuer(GENERAL_NAMES *crlissuer,
+    DIST_POINT_NAME *idpname)
+{
+    DIST_POINT_NAME dpname;
+
+    if (crlissuer == NULL)
+        return 0;
+    dpname.type = 0; /* fullName */
+    dpname.name.fullname = crlissuer;
+    dpname.dpname = NULL;
+    return idp_check_dp(&dpname, NULL, idpname);
+}
+
+/*
+ * Check whether the distribution point name |idpname| of a CRL's IDP extension
  * matches the default distribution point that RFC 5280, section 6.3.3, assumes
  * for CRLs not specified in any of the certificate's distribution points: one
  * whose fullName consists of the certificate issuer name and the names in the
@@ -2053,6 +2072,8 @@ static int crl_crldp_check(X509 *x, X509_CRL *crl, int crl_score,
             continue;
         if (crl->idp == NULL) {
             match = 1;
+        } else if (dp->distpoint == NULL && crl->idp->distpoint != NULL) {
+            match = idp_check_crlissuer(dp->CRLissuer, crl->idp->distpoint);
         } else {
             /*
              * A relative distribution point name is only comparable in

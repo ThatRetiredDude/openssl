@@ -1031,6 +1031,90 @@ static const char *kCrlIndirectNoChain[] = {
 };
 
 /*
+ * A leaf issued by kRoot whose only CRL distribution point has a cRLIssuer
+ * naming kRoot and no distributionPoint field.
+ */
+static const char *kCrlIssuerDPLeaf[] = {
+    "-----BEGIN CERTIFICATE-----\n",
+    "MIIEszCCA5ugAwIBAgICEAEwDQYJKoZIhvcNAQELBQAwgZAxCzAJBgNVBAYTAlVT\n",
+    "MRMwEQYDVQQIDApDYWxpZm9ybmlhMRYwFAYDVQQHDA1TYW4gRnJhbmNpc2NvMRUw\n",
+    "EwYDVQQKDAxFeGFtcGxlIENvcnAxHjAcBgNVBAsMFUNlcnRpZmljYXRlIEF1dGhv\n",
+    "cml0eTEdMBsGA1UEAwwURXhhbXBsZSBDb3JwIFJvb3QgQ0EwHhcNMjYwMzEwMTIw\n",
+    "MDAwWhcNMzYwMzA3MTIwMDAwWjBzMQswCQYDVQQGEwJVUzETMBEGA1UECAwKQ2Fs\n",
+    "aWZvcm5pYTEVMBMGA1UECgwMRXhhbXBsZSBDb3JwMRUwEwYDVQQLDAxXZWIgU2Vy\n",
+    "dmljZXMxITAfBgNVBAMMGGNybGlzc3Vlci1kcC5leGFtcGxlLmNvbTCCASIwDQYJ\n",
+    "KoZIhvcNAQEBBQADggEPADCCAQoCggEBAKSuf+LYfmahQUGet4JsLlvfE3WvcHCC\n",
+    "tufFZu2hzt1KgqvwKWimmCVMlmpuzSoNyLn+xdTYDtXyiP/M52aep3+tgUZvdWv7\n",
+    "kxCVu8728RWOmSasl+gqXLulP7C7ZIxSG+0APz9Y5ApafL+ykxAK0dprMYkB49S3\n",
+    "Phn5uiULjBWcEs9gLqzsr/zvRB0qN9Ly3at2XiZJzjfmkXB0OA0VFswxGl6HG3kI\n",
+    "zLzs4YJgoOZdUZO2jGaOgp+rVPQvuVJVefUrYlyaLGd9Dt/YKPoxhlnvEK3khYz6\n",
+    "9dPHCwaCZXwzsJdaqYE2p7Us26ce3rEnWcz6gUIe//VQRohSEq0fZbUCAwEAAaOC\n",
+    "ATEwggEtMAwGA1UdEwEB/wQCMAAwDgYDVR0PAQH/BAQDAgWgMB0GA1UdDgQWBBTt\n",
+    "jZcP2zxdvmCcW0Zt+uN3wgIxmjAfBgNVHSMEGDAWgBT+FA4TGwlny0oNS9pP8++Q\n",
+    "tUPbMzAjBgNVHREEHDAaghhjcmxpc3N1ZXItZHAuZXhhbXBsZS5jb20wgacGA1Ud\n",
+    "HwSBnzCBnDCBmaKBlqSBkzCBkDELMAkGA1UEBhMCVVMxEzARBgNVBAgMCkNhbGlm\n",
+    "b3JuaWExFjAUBgNVBAcMDVNhbiBGcmFuY2lzY28xFTATBgNVBAoMDEV4YW1wbGUg\n",
+    "Q29ycDEeMBwGA1UECwwVQ2VydGlmaWNhdGUgQXV0aG9yaXR5MR0wGwYDVQQDDBRF\n",
+    "eGFtcGxlIENvcnAgUm9vdCBDQTANBgkqhkiG9w0BAQsFAAOCAQEAl1Aqm0g7oSfZ\n",
+    "B5fNA2gKDMGeVf8NArt0B2+8WoED7z8qTjFFCwhajoW0e/RIImOaixSerKctJ+NK\n",
+    "zbGjmwvHRy0kQB2B6iIVSfp0JrwTYtxGbNCWOR+ahMXNPJXQnz0q7Gr8vN30blWH\n",
+    "fPbRtsczC07tpybv1M2hfn7zQvGPcf/kCEGkACC0V4ExPScw89EQGl6y7oeUI9aC\n",
+    "9SqAOBZ9EmT0Xt8wEajejXTBf1o5kFbxz6SzoZ+px8wQjWoRyXWxtLkptzi8VPVv\n",
+    "VIak3NUKrGFXEOrxn0iADBwWWdgA9SVSlltCf1AMN12CpNYAlup2sJ0kf/2+FOCx\n",
+    "HXeIJ/R9AA==\n",
+    "-----END CERTIFICATE-----\n",
+    NULL
+};
+
+/*
+ * A CRL issued by kRoot with an IDP whose fullName is kRoot's subject name,
+ * which matches the cRLIssuer of kCrlIssuerDPLeaf.
+ */
+static const char *kCrlIDPIssuerName[] = {
+    "-----BEGIN X509 CRL-----\n",
+    "MIICvDCCAaQCAQEwDQYJKoZIhvcNAQELBQAwgZAxCzAJBgNVBAYTAlVTMRMwEQYD\n",
+    "VQQIDApDYWxpZm9ybmlhMRYwFAYDVQQHDA1TYW4gRnJhbmNpc2NvMRUwEwYDVQQK\n",
+    "DAxFeGFtcGxlIENvcnAxHjAcBgNVBAsMFUNlcnRpZmljYXRlIEF1dGhvcml0eTEd\n",
+    "MBsGA1UEAwwURXhhbXBsZSBDb3JwIFJvb3QgQ0EXDTI2MDMxMDA4MDAwMFoXDTI2\n",
+    "MDYwODA4MDAwMFqggd4wgdswgaoGA1UdHAEB/wSBnzCBnKCBmaCBlqSBkzCBkDEL\n",
+    "MAkGA1UEBhMCVVMxEzARBgNVBAgMCkNhbGlmb3JuaWExFjAUBgNVBAcMDVNhbiBG\n",
+    "cmFuY2lzY28xFTATBgNVBAoMDEV4YW1wbGUgQ29ycDEeMBwGA1UECwwVQ2VydGlm\n",
+    "aWNhdGUgQXV0aG9yaXR5MR0wGwYDVQQDDBRFeGFtcGxlIENvcnAgUm9vdCBDQTAf\n",
+    "BgNVHSMEGDAWgBT+FA4TGwlny0oNS9pP8++QtUPbMzALBgNVHRQEBAICEAEwDQYJ\n",
+    "KoZIhvcNAQELBQADggEBAIoS5l81dVqKXEtDSpti0i9+Ntz9+Icx1Uq+m7hC7hmP\n",
+    "/x8XBida6cW0vNM1KTh+cS0Xpj1bFqEzm5JpGvNP58eX/tBdlT2W8IcnHTj/QbQk\n",
+    "pMtOlBZ50lfWJ4PpwZP+Go4v4wkBumxK2lOhVaYsjhIKfOTFISY93OQBblsMV10v\n",
+    "G/nRj0ndps321YX33l5pbFJDRg9Y1DiDqHoi/1qWeyXl3b06zKKTbuLzPBx/hMzt\n",
+    "urCf+7tknKUyrZNxjiuzsTtMD+prcnJm7YVDFXQ3RC4RaR4Zo8zStvrto/Hrh/DV\n",
+    "Fm5cLZD2PcSgAvKVz/SEqbwZo6B0gFEj5efUBWR/0WY=\n",
+    "-----END X509 CRL-----\n",
+    NULL
+};
+
+/*
+ * A CRL issued by kRoot with an IDP whose fullName is an unrelated URI, so
+ * it is not in scope for kCrlIssuerDPLeaf.
+ */
+static const char *kCrlIDPOtherURI[] = {
+    "-----BEGIN X509 CRL-----\n",
+    "MIICQTCCASkCAQEwDQYJKoZIhvcNAQELBQAwgZAxCzAJBgNVBAYTAlVTMRMwEQYD\n",
+    "VQQIDApDYWxpZm9ybmlhMRYwFAYDVQQHDA1TYW4gRnJhbmNpc2NvMRUwEwYDVQQK\n",
+    "DAxFeGFtcGxlIENvcnAxHjAcBgNVBAsMFUNlcnRpZmljYXRlIEF1dGhvcml0eTEd\n",
+    "MBsGA1UEAwwURXhhbXBsZSBDb3JwIFJvb3QgQ0EXDTI2MDMxMDA4MDAwMFoXDTI2\n",
+    "MDYwODA4MDAwMFqgZDBiMDIGA1UdHAEB/wQoMCagJKAihiBodHRwOi8vY3JsLmV4\n",
+    "YW1wbGUuY29tL290aGVyLmNybDAfBgNVHSMEGDAWgBT+FA4TGwlny0oNS9pP8++Q\n",
+    "tUPbMzALBgNVHRQEBAICEAAwDQYJKoZIhvcNAQELBQADggEBABWxRSBiPLHKQ7lq\n",
+    "n6TDN52sl4Fwlo7vgZoDm4+kpJ14tmPP/xhQKynenv2aZcJjTJZxjatAXWoHmC6C\n",
+    "1rQOfL46FeqchVkV8lfdy2DJr6KzUMkfP/RfMtexB57SOiXAsOfoxoW5gK2DcrM7\n",
+    "R1G+HFWlqNpEzebtv6FRjxsNqIZAAyvdTgkjxoNA+9wEqvyRVg3RymcOmbjT2QB2\n",
+    "NXv6UDOx20IDyv/muZrebcNuFCW5SQi0RptKIhqhk0XTMlmc0J1qLlJgYdgi2ZCY\n",
+    "sofXsksvw2QA5I1BkL7yWBD7NE1vVxY3dCAbftfYTBKr2kV3esucXkz+Ckkhqi2r\n",
+    "mAKNOqE=\n",
+    "-----END X509 CRL-----\n",
+    NULL
+};
+
+/*
  * A well-formed CRL issued by kRoot (sha256WithRSAEncryption, inner and
  * outer signatureAlgorithm identical), used as the positive test case in
  * test_crl_sigalg_mismatch.
@@ -1935,6 +2019,55 @@ err:
  * sha256WithRSAEncryption.  Without the inner/outer comparison the signature
  * would verify and the CRL would be accepted.
  */
+/*
+ * RFC 5280, section 6.3.3 (b)(2)(i): when the CRL's IDP has a distribution
+ * point name and the certificate's distribution point has no distributionPoint
+ * field, one of the IDP names must match one of the cRLIssuer names.
+ */
+static int test_crl_dp_crlissuer_idp_match(void)
+{
+    X509 *root = X509_from_strings(kRoot);
+    X509 *leaf = X509_from_strings(kCrlIssuerDPLeaf);
+    X509_CRL *crl = CRL_from_strings(kCrlIDPIssuerName);
+    STACK_OF(X509_CRL) *crls = NULL;
+    int test;
+
+    test = TEST_ptr(root)
+        && TEST_ptr(leaf)
+        && TEST_ptr(crl)
+        && TEST_ptr((crls = make_CRL_stack(crl, NULL)))
+        && TEST_int_eq(verify(leaf, root, crls, X509_V_FLAG_CRL_CHECK,
+                           kVerify),
+            X509_V_OK);
+
+    X509_CRL_free(crl);
+    X509_free(leaf);
+    X509_free(root);
+    return test;
+}
+
+static int test_crl_dp_crlissuer_idp_mismatch(void)
+{
+    X509 *root = X509_from_strings(kRoot);
+    X509 *leaf = X509_from_strings(kCrlIssuerDPLeaf);
+    X509_CRL *crl = CRL_from_strings(kCrlIDPOtherURI);
+    STACK_OF(X509_CRL) *crls = NULL;
+    int test;
+
+    test = TEST_ptr(root)
+        && TEST_ptr(leaf)
+        && TEST_ptr(crl)
+        && TEST_ptr((crls = make_CRL_stack(crl, NULL)))
+        && TEST_int_eq(verify(leaf, root, crls, X509_V_FLAG_CRL_CHECK,
+                           kVerify),
+            X509_V_ERR_DIFFERENT_CRL_SCOPE);
+
+    X509_CRL_free(crl);
+    X509_free(leaf);
+    X509_free(root);
+    return test;
+}
+
 static int test_crl_sigalg_mismatch(void)
 {
     X509 *root = X509_from_strings(kRoot);
@@ -2031,6 +2164,8 @@ int setup_tests(void)
     ADD_TEST(test_crl_indirect_revoked);
     ADD_TEST(test_crl_indirect_wrong_ta);
     ADD_TEST(test_crl_indirect_no_chain);
+    ADD_TEST(test_crl_dp_crlissuer_idp_match);
+    ADD_TEST(test_crl_dp_crlissuer_idp_mismatch);
     ADD_ALL_TESTS(test_reuse_crl, 6);
     ADD_MFAIL_TEST(test_crl_diff_mfail);
     ADD_TEST(test_crl_sigalg_mismatch);
